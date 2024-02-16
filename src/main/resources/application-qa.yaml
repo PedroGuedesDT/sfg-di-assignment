@@ -1,0 +1,4 @@
+guru:
+    username: User from application-qa.yaml
+    password: Pass from application-qa.yaml
+    url: Url from application-qa.yaml

@@ -1,0 +1,22 @@
+spring:
+  profiles:
+    active:
+      - ES
+      - cat
+      - qa
+guru:
+  username: User from application.yam
+  password: Password from application.yam
+  url: Url from application.yam
+---
+spring:
+  profiles: cat
+  banner:
+    image:
+      location: cat.jpg
+---
+spring:
+  profiles: dog
+  banner:
+    image:
+      location: puppy.jpg

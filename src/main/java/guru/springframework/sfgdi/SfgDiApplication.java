@@ -1,5 +1,7 @@
 package guru.springframework.sfgdi;
 
+import guru.springframework.sfgdi.config.datasource.FakeConstructorDataSource;
+import guru.springframework.sfgdi.config.datasource.FakeDataSource;
 import guru.springframework.sfgdi.controllers.*;
 import guru.springframework.sfgdi.services.ScopeService;
 import org.springframework.boot.SpringApplication;
@@ -16,6 +18,8 @@ public class SfgDiApplication {
 
 	public static void main(String[] args) {
 		ApplicationContext ctx = SpringApplication.run(SfgDiApplication.class, args);
+
+
 
 		PetController petController = ctx.getBean("petController", PetController.class);
 		System.out.println("--- The Best Pet is ---");
@@ -70,6 +74,18 @@ public class SfgDiApplication {
 			System.out.println(singletonBean3.getScope());
 		});
 		ex.shutdown();
+
+		System.out.println("------------ Properties");
+		FakeDataSource fds = ctx.getBean(FakeDataSource.class);
+		System.out.println("User: " + fds.getUsername());
+		System.out.println("Pass:" + fds.getPassword());
+		System.out.println("Url: " + fds.getUrl());
+
+		System.out.println("------------ Constructor binding Properties");
+		FakeConstructorDataSource fcds = ctx.getBean(FakeConstructorDataSource.class);
+		System.out.println("User: " + fcds.getUsername());
+		System.out.println("Pass:" + fcds.getPassword());
+		System.out.println("Url: " + fcds.getUrl());
 	}
 
 }
