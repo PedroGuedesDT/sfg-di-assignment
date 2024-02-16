@@ -2,25 +2,33 @@ package guru.springframework.sfgdi.config;
 
 import guru.springframework.pets.CatPetService;
 import guru.springframework.pets.DogPetService;
-import guru.springframework.sfgdi.services.*;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
-import org.springframework.context.annotation.Profile;
+import guru.springframework.pets.PetServiceFactory;
+import guru.springframework.sfgdi.services.I18NSpanishService;
+import guru.springframework.sfgdi.services.I18nEnglishGreetingService;
+import guru.springframework.sfgdi.services.ScopeService;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.*;
 
+@ImportResource("classpath:sfgdi-config.xml")
 @Configuration
 public class ServicesConfiguration {
+
+    @Bean
+    PetServiceFactory petServiceFactory() {
+        return new PetServiceFactory();
+    }
 
     @Profile({"cat"})
     @Bean("petService")
     CatPetService catPetService() {
-        return new CatPetService();
+        return (CatPetService) petServiceFactory().getPetService("cat");
     }
 
     @Profile({"dog", "default"})
     @Bean("petService")
-    DogPetService dogPetService() {
-        return new DogPetService();
+    DogPetService dogPetService(ApplicationContext applicationContext) {
+        return (DogPetService) petServiceFactory().getPetService("dog");
     }
 
     @Profile("EN")
@@ -35,25 +43,15 @@ public class ServicesConfiguration {
         return new I18NSpanishService();
     }
 
-    @Primary
     @Bean
-    PrimaryGreetingService primaryGreetingService() {
-        return new PrimaryGreetingService();
+    ScopeService singletonBean() {
+        return new ScopeService(ConfigurableBeanFactory.SCOPE_SINGLETON);
     }
 
     @Bean
-    ConstructorGreetingService constructorGreetingService() {
-        return new ConstructorGreetingService();
-    }
-
-    @Bean
-    PropertyInjectedGreetingService propertyInjectedGreetingService() {
-        return new PropertyInjectedGreetingService();
-    }
-
-    @Bean
-    SetterInjectedGreetingService setterInjectedGreetingService() {
-        return new SetterInjectedGreetingService();
+    @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+    ScopeService prototypeBean() {
+        return new ScopeService(ConfigurableBeanFactory.SCOPE_PROTOTYPE);
     }
 
 }

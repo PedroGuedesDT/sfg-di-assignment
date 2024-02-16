@@ -1,13 +1,17 @@
 package guru.springframework.sfgdi;
 
 import guru.springframework.sfgdi.controllers.*;
+import guru.springframework.sfgdi.services.ScopeService;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 @SpringBootApplication
-@ComponentScan("guru.springframework")
+//@ComponentScan("guru.springframework")
 public class SfgDiApplication {
 
 	public static void main(String[] args) {
@@ -36,6 +40,36 @@ public class SfgDiApplication {
 		System.out.println("-------- Constructor" );
 		ConstructorInjectedController constructorInjectedController = (ConstructorInjectedController) ctx.getBean("constructorInjectedController");
 		System.out.println(constructorInjectedController.getGreeting());
+
+		System.out.println("-------- Scopes");
+		ScopeService singletonBean1 = (ScopeService) ctx.getBean("singletonBean");
+		System.out.println(singletonBean1.getScope());
+		ScopeService singletonBean2 = (ScopeService) ctx.getBean("singletonBean");
+		System.out.println(singletonBean2.getScope());
+
+		ScopeService prototypeBean1 = (ScopeService) ctx.getBean("prototypeBean");
+		System.out.println(prototypeBean1.getScope());
+		ScopeService prototypeBean2 = (ScopeService) ctx.getBean("prototypeBean");
+		System.out.println(prototypeBean2.getScope());
+
+		ExecutorService ex = Executors.newFixedThreadPool(2);
+		ex.submit(() -> {
+			ScopeService singletonBean3 = (ScopeService) ctx.getBean("singletonBean");
+			System.out.println(singletonBean3.getScope());
+		});
+		ex.submit(() -> {
+			ScopeService singletonBean3 = (ScopeService) ctx.getBean("singletonBean");
+			System.out.println(singletonBean3.getScope());
+		});
+		ex.submit(() -> {
+			ScopeService singletonBean3 = (ScopeService) ctx.getBean("singletonBean");
+			System.out.println(singletonBean3.getScope());
+		});
+		ex.submit(() -> {
+			ScopeService singletonBean3 = (ScopeService) ctx.getBean("singletonBean");
+			System.out.println(singletonBean3.getScope());
+		});
+		ex.shutdown();
 	}
 
 }
